@@ -30,11 +30,13 @@ let baseMaps = {
 
 // 1. Add a 2nd layer group for the tectonic plate data.
 let allEarthquakes = new L.LayerGroup();
+let tectonicPlates = new L.LayerGroup();
 
 
 // 2. Add a reference to the tectonic plates group to the overlays object.
 let overlays = {
-  "Earthquakes": allEarthquakes
+  "Earthquakes": allEarthquakes,
+  "Tectonic Plates": tectonicPlates
 };
 
 // Then we add a control to the map that will allow the user to change which
@@ -43,7 +45,7 @@ L.control.layers(baseMaps, overlays).addTo(map);
 
 // Retrieve the earthquake GeoJSON data.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(function(data) {
-
+  console.log("USGS");
   // This function returns the style data for each of the earthquakes we plot on
   // the map. We pass the magnitude of the earthquake into two separate functions
   // to calculate the color and radius.
@@ -92,7 +94,7 @@ d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geoj
   L.geoJson(data, {
     	// We turn each feature into a circleMarker on the map.
     	pointToLayer: function(feature, latlng) {
-      		console.log(data);
+      		// console.log(data);
       		return L.circleMarker(latlng);
         },
       // We set the style for each circleMarker using our styleInfo function.
@@ -139,9 +141,12 @@ legend.onAdd = function() {
   // Finally, we our legend to the map.
   legend.addTo(map);
 
-
   // 3. Use d3.json to make a call to get our Tectonic Plate geoJSON data.
-  d3.json().then(() {
-    
+  let tectonicDataURL = "https://github.com/fraxen/tectonicplates/blob/master/GeoJSON/PB2002_boundaries.json"
+  d3.json(tectonicDataURL).then(function(data) {
+    console.log(tectonicDataURL);
+  L.geoJSON(data).addTo(map);
   });
 });
+
+// tectonicPlates.addTo(map)
